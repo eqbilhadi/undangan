@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Undangan Digital — Fahmi & Eka</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+  <style>
+    :root{
+      --accent:#7b5cff;
+      --muted:#6b7280;
+      --card-bg: rgba(255,255,255,0.85);
+    }
+    *{box-sizing:border-box}
+    body{
+      font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg, #f7f6ff 0%, #ffffff 100%);
+      color:#12202b;
+      -webkit-font-smoothing:antialiased;
+    }
+
+    /* Hero */
+    .hero{
+      min-height: 68vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background-image: linear-gradient(120deg, rgba(123,92,255,0.10), rgba(0,0,0,0.05)), url('dp.jpg');
+      background-size:cover;
+      background-position:center;
+      padding: 6rem 1rem;
+      position:relative;
+    }
+    .hero .card{
+      background: var(--card-bg);
+      border:none;
+      max-width:940px;
+      box-shadow: 0 10px 30px rgba(15,15,20,0.08);
+      border-radius:18px;
+    }
+    .couple-names{
+      font-weight:700;
+      font-size:2.15rem;
+      letter-spacing:0.4px;
+      color:var(--accent);
+    }
+    .muted{color:var(--muted)}
+
+    /* sections */
+    section{padding:60px 0;}
+    .section-title{
+      text-align:center;
+      margin-bottom:36px;
+    }
+
+    /* music control */
+    .music-btn{position:fixed; right:18px; bottom:18px; z-index:9999; border-radius:50%; box-shadow:0 8px 20px rgba(15,15,20,0.15)}
+    .music-btn i{transform:translateY(-1px)}
+
+    /* gallery */
+    .gallery img{width:100%; height:230px; object-fit:cover; border-radius:12px; transition:transform .35s}
+    .gallery img:hover{transform:scale(1.03)}
+
+    /* rekening card */
+    .rekening-card {max-width:420px; margin:0 auto; border-radius:14px; padding:18px; background:#fff; box-shadow:0 8px 30px rgba(0,0,0,0.06)}
+    #copy-alert{display:none}
+
+    /* footer */
+    footer{padding:20px 0; text-align:center; color:var(--muted)}
+
+    /* small screens */
+    @media (max-width:575px){
+      .hero{padding:3.5rem 1rem}
+      .couple-names{font-size:1.6rem}
+      .gallery img{height:160px}
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Music control -->
+  <audio id="bg-music" loop>
+    <!-- Ganti src dengan path file mp3 milikmu -->
+    <source src="raim.mp3" type="audio/mpeg">
+  </audio>
+  <button id="music-toggle" class="btn btn-primary music-btn p-3" title="Play / Pause">
+    <i id="music-icon" class="fa-solid fa-play"></i>
+  </button>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="card p-4 p-md-5">
+      <div class="row gx-3 align-items-center">
+        <div class="col-md-7">
+          <h6 class="muted mb-2">Dengan memohon rahmat dan ridho Allah SWT</h6>
+          <div class="couple-names">Fahmi <span style="color:#222; font-weight:400;">&</span> Eka</div>
+          <p class="muted mb-3">Kami mengundang Bapak/Ibu/Saudara/i untuk hadir pada acara Walimatul Ursy.</p>
+
+          <div class="d-flex gap-3 flex-wrap">
+            <div>
+              <small class="muted d-block">Tanggal</small>
+              <strong id="event-date-display">6 Desember 2025</strong>
+            </div>
+            <div>
+              <small class="muted d-block">Lokasi</small>
+              <strong>Jl. Sumbodro No.6 03/03, Kaligelang</strong>
+            </div>
+            <div>
+              <small class="muted d-block">Tempat</small>
+              <strong>Kediaman Mas Fahmi</strong>
+            </div>
+          </div>
+
+          <div class="mt-4">
+            <button class="btn btn-outline-primary me-2" data-bs-toggle="modal" data-bs-target="#rsvpModal"><i class="fa-solid fa-envelope-open-text me-2"></i> RSVP</button>
+            <a class="btn btn-primary" href="#detail"><i class="fa-solid fa-eye me-2"></i> Lihat Detail</a>
+          </div>
+        </div>
+
+        <div class="col-md-5 text-center d-none d-md-block">
+          <img src="dp.jpg" alt="couple" class="img-fluid rounded-3 shadow-sm">
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Countdown -->
+  <section id="countdown" class="text-center">
+    <div class="container">
+      <div class="section-title">
+        <h4>Hari Acara </h4>
+        <p class="muted">Sisa waktu menuju hari bahagia</p>
+      </div>
+
+      <div class="d-flex justify-content-center">
+        <div class="card p-4 px-5 shadow-sm" style="border-radius:12px;">
+          <div class="d-flex gap-4 align-items-center">
+            <div>
+              <div class="fs-3 fw-bold" id="days">0</div>
+              <div class="muted small">Hari</div>
+            </div>
+            <div>
+              <div class="fs-3 fw-bold" id="hours">0</div>
+              <div class="muted small">Jam</div>
+            </div>
+            <div>
+              <div class="fs-3 fw-bold" id="minutes">0</div>
+              <div class="muted small">Menit</div>
+            </div>
+            <div>
+              <div class="fs-3 fw-bold" id="seconds">0</div>
+              <div class="muted small">Detik</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Detail acara -->
+  <section id="detail" style="background-image:url('bg2.jpg'); background-size:cover; background-position:center 40%; background-repeat:no-repeat;">
+    <div class="container" style="backdrop-filter:blur(1px); padding:60px 0;">
+      <div class="section-title">
+        <h3>Detail Acara</h3>
+        <p class="bold">Jadwal dan Lokasi Acara</p>
+      </div>
+
+      <div class="row g-4 align-items-center">
+        <div class="col-lg-6">
+          <div class="card p-4">
+            <h5>Walimatul Ursy</h5>
+            <p class="muted mb-1"><i class="fa-solid fa-calendar-days me-2"></i> 6 Desember 2025</p>
+            <p class="muted mb-1"><i class="fa-solid fa-clock me-2"></i> 09:00 WIB - Selesai</p>
+            <p class="muted mb-3"><i class="fa-solid fa-location-dot me-2"></i> Kediaman Mempelai Pria</p>
+
+            <p class="muted">Silakan konfirmasi kehadiran di form RSVP.</p>
+
+            <a class="btn btn-outline-primary mt-3" href="https://maps.app.goo.gl/eLV4cUmQj5KLrUEJ8" target="_blank">
+              <i class="fa-solid fa-map-location-dot me-2"></i> Buka Peta
+            </a>
+          </div>
+        </div>
+
+        <div class="col-lg-6">
+          <div class="card p-4">
+            <h5>Informasi Tambahan</h5>
+            <p class="muted">Dresscode: Bebas & Sopan (Tidak boleh memakai jersey MU) </p>
+            <p class="muted">Mohon datang tepat waktu</p>
+            <div class="mt-2">
+              <a class="btn btn-primary me-2" href="#" onclick="shareInvite()">Share</a>
+              <a class="btn btn-outline-secondary" href="#galeri">Galeri</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Rekening dan QR -->
+  <section id="rekening">
+    <div class="container">
+      <div class="section-title">
+        <h3>Hadiah / Amplop Digital</h3>
+        <p class="muted">Jika berkenan, dapat transfer ke nomor rekening berikut</p>
+      </div>
+
+      <div class="rekening-card text-center">
+        <h6 class="muted mb-1">Bank BRI</h6>
+        <p id="rekening-number" class="fs-4 fw-bold mb-0">379501043315537</p>
+        <p class="muted mb-3">a.n Firdaus Fahmi </p>
+
+        <div class="d-flex justify-content-center gap-2 mb-3">
+          <button class="btn btn-outline-primary" onclick="copyRekening()"><i class="fa-solid fa-copy me-2"></i>Copy</button>
+        </div>
+
+        <div id="copy-alert" class="muted small">Nomor rekening tersalin!</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Galeri -->
+  <section id="galeri" class="bg-white">
+    <div class="container">
+      <div class="section-title">
+        <h3>Galeri</h3>
+        <p class="muted">Momen-momen kami</p>
+      </div>
+
+      <div class="row g-3 gallery">
+        <div class="col-6 col-md-3"><img src="bg2.jpg" alt=""></div>
+        <div class="col-6 col-md-3"><img src="indoor.jpg" alt=""></div>
+        <div class="col-6 col-md-3"><img src="bg.jpg" alt=""></div>
+        <div class="col-6 col-md-3"><img src="dp.jpg" alt=""></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <small>&copy; 2025 Fahmi & Eka • Dibuat dengan ❤️</small>
+    </div>
+  </footer>
+
+  <!-- RSVP Modal -->
+  <div class="modal fade" id="rsvpModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <form id="rsvp-form">
+          <div class="modal-header">
+            <h5 class="modal-title">Konfirmasi Kehadiran</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label">Nama</label>
+              <input required name="nama" class="form-control" />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Jumlah Tamu</label>
+              <input required name="tamu" type="number" min="0" class="form-control" value="1" />
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Pesan / Doa</label>
+              <textarea name="pesan" rows="3" class="form-control"></textarea>
+            </div>
+            <div id="rsvp-alert" class="text-success" style="display:none">Terima kasih! Konfirmasi tersimpan.</div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Kirim</button>
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Tutup</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- QRCode.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <script>
+    // ---------- CONFIG: sesuaikan nilai berikut ----------
+    const EVENT_DATE = "2025-12-06T09:00:00"; // format ISO
+    const REKENING = "1234567890";
+    const REKENING_BANK = "Bank BCA";
+    const REKENING_AN = "Fahmi & Eka";
+    const INVITE_TITLE = "Undangan Pernikahan Fahmi & Eka";
+    const INVITE_URL = location.href;
+    // ----------------------------------------------------
+
+    // Set teks dinamis
+    document.getElementById("rekening-number").innerText = REKENING;
+    // show event date (human friendly)
+    const dateObj = new Date(EVENT_DATE);
+    const opts = { year:'numeric', month:'long', day:'numeric', hour:'2-digit', minute:'2-digit' };
+    document.getElementById("event-date-display").innerText = dateObj.toLocaleString('id-ID', opts);
+
+    // Countdown
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const target = new Date(EVENT_DATE).getTime();
+      let diff = target - now;
+      if (diff < 0) diff = 0;
+      const days = Math.floor(diff / (1000*60*60*24));
+      const hours = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+      const minutes = Math.floor((diff % (1000*60*60)) / (1000*60));
+      const seconds = Math.floor((diff % (1000*60)) / 1000);
+      document.getElementById("days").innerText = days;
+      document.getElementById("hours").innerText = hours.toString().padStart(2,'0');
+      document.getElementById("minutes").innerText = minutes.toString().padStart(2,'0');
+      document.getElementById("seconds").innerText = seconds.toString().padStart(2,'0');
+    }
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
+    // Music controls
+    const audio = document.getElementById('bg-music');
+    const musicBtn = document.getElementById('music-toggle');
+    const musicIcon = document.getElementById('music-icon');
+
+    function updateMusicIcon(){
+      musicIcon.className = audio.paused ? 'fa-solid fa-play' : 'fa-solid fa-pause';
+    }
+    musicBtn.addEventListener('click', () => {
+      if (audio.paused) {
+        audio.play().catch(()=>{ /* autoplay may be blocked */ });
+      } else {
+        audio.pause();
+      }
+      updateMusicIcon();
+    });
+    audio.addEventListener('play', updateMusicIcon);
+    audio.addEventListener('pause', updateMusicIcon);
+
+    // Copy rekening
+    const copyAlert = document.getElementById('copy-alert');
+    async function copyRekening(){
+      try {
+        await navigator.clipboard.writeText(REKENING);
+        copyAlert.style.display = 'block';
+        setTimeout(()=> copyAlert.style.display = 'none', 1800);
+      } catch(e){
+        alert("Gagal menyalin. Silakan salin manual: " + REKENING);
+      }
+    }
+
+    // QR generate
+    let qrcodeEl;
+    function showQR(){
+      const el = document.getElementById('qrcode');
+      if (el.style.display === 'none' || el.style.display === '') {
+        el.style.display = 'block';
+        if (!qrcodeEl) {
+          qrcodeEl = new QRCode(el, {
+            text: `BANK:${REKENING_BANK};AN:${REKENING_AN};NO:${REKENING}`,
+            width: 180,
+            height: 180
+          });
+        }
+      } else {
+        el.style.display = 'none';
+      }
+    }
+
+    // Simple share (copy link)
+    function shareInvite(){
+      if (navigator.share) {
+        navigator.share({ title: INVITE_TITLE, url: INVITE_URL }).catch(()=>{});
+      } else {
+        navigator.clipboard.writeText(INVITE_URL).then(()=>{
+          alert("Link undangan disalin ke clipboard!");
+        });
+      }
+    }
+
+    // RSVP form (store to localStorage)
+    const rsvpForm = document.getElementById('rsvp-form');
+    rsvpForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      const fd = new FormData(rsvpForm);
+      const entry = {
+        nama: fd.get('nama'),
+        tamu: fd.get('tamu'),
+        pesan: fd.get('pesan'),
+        time: new Date().toISOString()
+      };
+      const key = 'rsvp_entries_v1';
+      const arr = JSON.parse(localStorage.getItem(key) || "[]");
+      arr.push(entry);
+      localStorage.setItem(key, JSON.stringify(arr));
+      document.getElementById('rsvp-alert').style.display = 'block';
+      setTimeout(() => {
+        const modal = bootstrap.Modal.getInstance(document.getElementById('rsvpModal'));
+        modal.hide();
+        document.getElementById('rsvp-alert').style.display = 'none';
+        rsvpForm.reset();
+      }, 1200);
+    });
+
+    // Optional: preload images for smoother UI
+    (function preloadImages(){
+      const imgs = [
+        'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.0.3&s=0b7e3e49f3d94fa2f26d6f0b7ad7be8b'
+      ];
+      imgs.forEach(u => { const i=new Image(); i.src=u; });
+    })();
+
+    // Accessibility: allow keyboard toggle music (M)
+    document.addEventListener('keydown', (e) => {
+      if (e.key.toLowerCase() === 'm') {
+        musicBtn.click();
+      }
+    });
+  </script>
+</body>
+</html>
